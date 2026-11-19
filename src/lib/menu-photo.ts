@@ -31,10 +31,10 @@ export async function compressMenuPhoto(file: File, maxSide = 1600, quality = 0.
   canvas.width = Math.round(bitmap.width * scale);
   canvas.height = Math.round(bitmap.height * scale);
   const ctx = canvas.getContext("2d");
-  if (!ctx) throw new Error("Fotoğraf işlenemedi.");
+  if (!ctx) throw new Error("Photo could not be processed.");
   ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
   bitmap.close();
   return new Promise((resolve, reject) =>
-    canvas.toBlob((blob) => (blob ? resolve(blob) : reject(new Error("Fotoğraf işlenemedi."))), "image/jpeg", quality),
+    canvas.toBlob((blob) => (blob ? resolve(blob) : reject(new Error("Photo could not be processed."))), "image/jpeg", quality),
   );
 }

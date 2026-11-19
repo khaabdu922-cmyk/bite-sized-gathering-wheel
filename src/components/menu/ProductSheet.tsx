@@ -18,8 +18,8 @@ export function ProductSheet({ item, fav, onToggleFav, onClose }: { item: Produc
           {item && <>
             <div className="relative">
               <img src={item.img} alt={item.name} className="aspect-square w-full rounded-2xl object-cover" />
-              <DialogPrimitive.Close aria-label="Kapat" className={`absolute left-2 top-2 ${roundButton}`}><X className="size-4" /></DialogPrimitive.Close>
-              <button type="button" onClick={onToggleFav} aria-label="Favori" className={`absolute right-2 top-2 ${roundButton}`}><Heart className={`size-4 ${fav ? "fill-primary text-primary" : ""}`} /></button>
+              <DialogPrimitive.Close aria-label="Close" className={`absolute left-2 top-2 ${roundButton}`}><X className="size-4" /></DialogPrimitive.Close>
+              <button type="button" onClick={onToggleFav} aria-label="Favorite" className={`absolute right-2 top-2 ${roundButton}`}><Heart className={`size-4 ${fav ? "fill-primary text-primary" : ""}`} /></button>
             </div>
             <div className="px-2 pb-2 pt-3">
               <DialogPrimitive.Title className="text-lg font-semibold">{item.name}</DialogPrimitive.Title>

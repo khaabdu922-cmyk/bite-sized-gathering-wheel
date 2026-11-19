@@ -15,19 +15,19 @@ export function PhotoUploader({ value, onChange, onBusyChange }: { value: string
 
   async function upload(file: File | undefined) {
     if (!file) return;
-    if (!file.type.startsWith("image/")) { toast.error("Lütfen bir fotoğraf seçin."); return; }
-    if (file.size > MENU_PHOTO_SOURCE_MAX_BYTES) { toast.error("Fotoğraf en fazla 15 MB olabilir."); return; }
+    if (!file.type.startsWith("image/")) { toast.error("Please choose a photo."); return; }
+    if (file.size > MENU_PHOTO_SOURCE_MAX_BYTES) { toast.error("Photo can be at most 15 MB."); return; }
     setUploading(true); onBusyChange?.(true);
     try {
       const blob = await compressMenuPhoto(file);
-      if (blob.size > MENU_PHOTO_MAX_BYTES) { toast.error("Fotoğraf çok büyük. En fazla 2 MB olabilir; lütfen daha küçük bir fotoğraf seçin."); return; }
+      if (blob.size > MENU_PHOTO_MAX_BYTES) { toast.error("Photo is too large. Max 2 MB; please choose a smaller photo."); return; }
       const form = new FormData();
       form.append("file", new File([blob], "photo.jpg", { type: "image/jpeg" }));
       const { url } = await send({ data: form });
       onChange(url);
-      toast.success("Fotoğraf yüklendi.");
+      toast.success("Photo uploaded.");
     } catch {
-      toast.error("Fotoğraf yüklenemedi, tekrar deneyin.");
+      toast.error("Photo could not be uploaded, try again.");
     } finally {
       setUploading(false); onBusyChange?.(false);
       if (input.current) input.current.value = "";
@@ -43,7 +43,7 @@ export function PhotoUploader({ value, onChange, onBusyChange }: { value: string
 
   return (
     <div className="space-y-2">
-      <p className="text-sm font-medium">Ürün fotoğrafı</p>
+      <p className="text-sm font-medium">Product photo</p>
       <div
         onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
         onDragLeave={() => setDragging(false)}
@@ -52,28 +52,28 @@ export function PhotoUploader({ value, onChange, onBusyChange }: { value: string
       >
         {value ? (
           <>
-            <img src={menuImage(value)} alt="Ürün fotoğrafı" className="aspect-[4/3] w-full object-cover" />
+            <img src={menuImage(value)} alt="Product photo" className="aspect-[4/3] w-full object-cover" />
             <div className="absolute inset-x-0 bottom-0 flex justify-end p-3">
               <Button type="button" size="sm" variant="secondary" disabled={uploading} onClick={pick}>
-                <RefreshCw />Fotoğrafı değiştir
+                <RefreshCw />Change photo
               </Button>
             </div>
           </>
         ) : (
           <button type="button" onClick={pick} disabled={uploading} className="flex aspect-[4/3] w-full flex-col items-center justify-center gap-3 bg-card px-6 text-center transition-colors hover:bg-secondary">
             <span className="flex size-14 items-center justify-center rounded-full bg-primary/15 text-primary"><ImagePlus className="size-7" /></span>
-            <span className="text-base font-medium">Fotoğraf yükle</span>
-            <span className="text-xs text-muted-foreground">Telefonunuzdan veya bilgisayarınızdan bir fotoğraf seçin</span>
+            <span className="text-base font-medium">Upload photo</span>
+            <span className="text-xs text-muted-foreground">Choose a photo from your phone or computer</span>
           </button>
         )}
         {uploading && (
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-overlay backdrop-blur-sm">
             <Loader2 className="size-8 animate-spin text-primary" />
-            <span className="text-sm">Yükleniyor...</span>
+            <span className="text-sm">Loading...</span>
           </div>
         )}
       </div>
-      <input ref={input} type="file" accept="image/*" aria-label="Fotoğraf yükle" className="sr-only" onChange={(e) => void upload(e.target.files?.[0])} />
+      <input ref={input} type="file" accept="image/*" aria-label="Upload photo" className="sr-only" onChange={(e) => void upload(e.target.files?.[0])} />
     </div>
   );
 }

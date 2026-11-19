@@ -33,7 +33,7 @@ export function GuestWheel({ open, onOpenChange }: { open: boolean; onOpenChange
     queryKey: ["guest-wheel"],
     queryFn: async ({ signal }) => {
       const response = await fetch("/api/public/wheel-config", { signal });
-      if (!response.ok) throw new Error("Çark yüklenemedi.");
+      if (!response.ok) throw new Error("Wheel could not be loaded.");
       return guestWheelSchema.parse(await response.json());
     },
     staleTime: 30_000,
@@ -68,9 +68,9 @@ export function GuestWheel({ open, onOpenChange }: { open: boolean; onOpenChange
         saveCount(settings.max_spins); setCount(settings.max_spins);
         setBusy(false); spinning.current = false; return;
       }
-      if (!response.ok) throw new Error("Şu anda çevrilemiyor. Lütfen tekrar deneyin.");
+      if (!response.ok) throw new Error("Can't spin right now. Please try again.");
       const index = result.index;
-      if (typeof index !== "number" || !Number.isInteger(index) || !prizes[index]) throw new Error("Lütfen tekrar deneyin.");
+      if (typeof index !== "number" || !Number.isInteger(index) || !prizes[index]) throw new Error("Please try again.");
       const next = typeof result.used === "number" ? result.used : spinCount() + 1;
       saveCount(next);
       setCount(next);
@@ -88,7 +88,7 @@ export function GuestWheel({ open, onOpenChange }: { open: boolean; onOpenChange
       };
       frame.current = requestAnimationFrame(animate);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Lütfen tekrar deneyin.");
+      setError(err instanceof Error ? err.message : "Please try again.");
       setBusy(false); spinning.current = false;
     }
   }
@@ -98,7 +98,7 @@ export function GuestWheel({ open, onOpenChange }: { open: boolean; onOpenChange
       <Dialog.Overlay className="fixed inset-0 z-50 bg-overlay" />
       <Dialog.Content aria-describedby={undefined} className="fixed inset-0 z-50 mx-auto flex max-w-lg flex-col overflow-y-auto bg-background text-foreground outline-none">
         <div className="flex shrink-0 items-center px-4 pt-3">
-          <Dialog.Close asChild><Button variant="ghost" size="icon" aria-label="Menüye dön" title="Menüye dön"><ArrowLeft className="size-5" /></Button></Dialog.Close>
+          <Dialog.Close asChild><Button variant="ghost" size="icon" aria-label="Back to menu" title="Back to menu"><ArrowLeft className="size-5" /></Button></Dialog.Close>
         </div>
         <header className="px-4 pb-2 text-center">
           <Dialog.Title className="break-words text-3xl font-bold">{settings?.title || "🎡"}</Dialog.Title>
@@ -108,7 +108,7 @@ export function GuestWheel({ open, onOpenChange }: { open: boolean; onOpenChange
           <section className="rounded-[20px] border border-border bg-card p-5">
             <div className="relative mx-auto my-2 aspect-square w-[min(88vw,340px)]">
               {prizes.length > 0 ? <>
-              <svg viewBox="0 0 680 680" role="img" aria-label="Ödül çarkı" className="h-full w-full">
+              <svg viewBox="0 0 680 680" role="img" aria-label="Prize wheel" className="h-full w-full">
                 <defs><filter id="wheel-text-shadow" x="-20%" y="-50%" width="140%" height="200%"><feDropShadow dx="0" dy="0" stdDeviation="1.5" floodColor="#000" floodOpacity="0.35" /></filter></defs>
                 <g transform={`rotate(${rotation} 340 340)`}>
                   {prizes.map((prize, i) => {
@@ -132,7 +132,7 @@ export function GuestWheel({ open, onOpenChange }: { open: boolean; onOpenChange
               </svg>
               <div aria-hidden className="absolute -top-3 left-1/2 h-0 w-0 -translate-x-1/2 border-x-[15px] border-t-[32px] border-x-transparent border-t-[#d9480f] drop-shadow" />
               </> : <div className="flex h-full items-center justify-center rounded-full bg-secondary text-muted-foreground">
-                {config.isError ? <FerrisWheel className="size-16" /> : <LoaderCircle aria-label="Çark yükleniyor" className="size-10 animate-spin motion-reduce:animate-none" />}
+                {config.isError ? <FerrisWheel className="size-16" /> : <LoaderCircle aria-label="Loading wheel" className="size-10 animate-spin motion-reduce:animate-none" />}
               </div>}
             </div>
             {config.isError

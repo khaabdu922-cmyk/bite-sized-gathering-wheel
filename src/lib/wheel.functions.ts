@@ -15,7 +15,7 @@ export const getWheelAdmin = createServerFn({ method: "GET" }).middleware([manag
     db.from("wheel_claims").select("code, prize, created_at").is("redeemed_at", null).gt("expires_at", new Date().toISOString())
       .order("created_at", { ascending: false }).limit(50),
   ]);
-  if (settings.error || wins.error || claims.error) throw new Error("Çark ayarları yüklenemedi.");
+  if (settings.error || wins.error || claims.error) throw new Error("Wheel settings could not be loaded.");
   const s = settings.data;
   return {
     title: s.title, subtitle: s.subtitle, max_spins: s.max_spins,
@@ -28,13 +28,13 @@ export const getWheelAdmin = createServerFn({ method: "GET" }).middleware([manag
 export const saveWheel = createServerFn({ method: "POST" }).middleware([managementDb]).inputValidator((input) => wheelSchema.parse(input)).handler(async ({ data, context }) => {
   const result = await context.db.from("wheel_settings")
     .update({ ...data, prizes: data.prizes, updated_at: new Date().toISOString() }).eq("id", 1).select("id").single();
-  if (result.error) throw new Error("Çark ayarları kaydedilemedi.");
+  if (result.error) throw new Error("Wheel settings could not be saved.");
   return { ok: true };
 });
 
 export const resetWheelToday = createServerFn({ method: "POST" }).middleware([managementDb]).handler(async ({ context }) => {
   const result = await context.db.from("wheel_wins").delete().eq("day", wheelDay());
-  if (result.error) throw new Error("Bugünkü sayılar sıfırlanamadı.");
+  if (result.error) throw new Error("Today's counts could not be reset.");
   return { ok: true };
 });
 
@@ -54,6 +54,6 @@ export const redeemClaim = createServerFn({ method: "POST" }).middleware([manage
   const now = new Date().toISOString();
   const { data: claim, error } = await context.db.from("wheel_claims").update({ redeemed_at: now })
     .eq("code", data.code).is("redeemed_at", null).gt("expires_at", now).select("code").maybeSingle();
-  if (error) throw new Error("Kod işaretlenemedi.");
+  if (error) throw new Error("Code could not be marked.");
   return { ok: !!claim };
 });

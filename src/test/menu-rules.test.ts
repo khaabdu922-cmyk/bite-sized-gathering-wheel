@@ -10,7 +10,7 @@ describe("New product photo", () => {
   it("requires an uploaded photo", () => {
     const result = itemSchema.safeParse({ ...item, image: "" });
     expect(result.success).toBe(false);
-    expect(result.error?.issues[0]?.message).toBe("Lütfen ürün fotoğrafı yükleyin.");
+    expect(result.error?.issues[0]?.message).toBe("Please upload a product photo.");
   });
 });
 describe("Guest comments", () => {

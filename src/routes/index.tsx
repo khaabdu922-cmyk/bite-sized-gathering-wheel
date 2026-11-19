@@ -4,10 +4,10 @@ import { createFileRoute, redirect } from "@tanstack/react-router";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Kahve Menüsü — Yönetim" },
-      { name: "description", content: "Menünüzü yönetin ve misafirleriniz için QR kodunu indirin." },
-      { property: "og:title", content: "Kahve Menüsü Yönetimi" },
-      { property: "og:description", content: "Menü yönetimi ve QR kod." },
+      { title: "Coffee Menu — Management" },
+      { name: "description", content: "Manage your menu and download the QR code for your guests." },
+      { property: "og:title", content: "Coffee Menu Management" },
+      { property: "og:description", content: "Menu management and QR code." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],

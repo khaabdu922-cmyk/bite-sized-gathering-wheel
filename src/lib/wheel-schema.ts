@@ -13,7 +13,7 @@ export const wheelSchema = z.object({
   subtitle: z.string().trim().max(160),
   max_spins: z.number().int().min(0).max(99),
   prizes: z.array(prizeSchema).min(2).max(16)
-    .refine((p) => new Set(p.map((x) => x.t.toLocaleLowerCase("tr"))).size === p.length, "Ödül adları farklı olmalı."),
+    .refine((p) => new Set(p.map((x) => x.t.toLocaleLowerCase("tr"))).size === p.length, "Prize names must be different."),
 });
 /** Public wheel data for guests: daily limits stay on the server. */
 export const guestWheelSchema = z.object({

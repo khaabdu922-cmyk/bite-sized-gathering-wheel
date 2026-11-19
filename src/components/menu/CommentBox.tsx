@@ -20,15 +20,15 @@ export function CommentBox() {
     e.preventDefault();
     const values = new FormData(e.currentTarget);
     const parsed = commentSchema.safeParse({ author_name: "", message: values.get("message") ?? "" });
-    if (!parsed.success) { toast.error(parsed.error.issues[0]?.message ?? "Lütfen yorumunuzu yazın."); return; }
+    if (!parsed.success) { toast.error(parsed.error.issues[0]?.message ?? "Please write your comment."); return; }
     setBusy(true);
     try { await send({ data: parsed.data }); setSent(true); }
-    catch { toast.error("Yorum gönderilemedi, lütfen tekrar deneyin."); }
+    catch { toast.error("Comment could not be sent, please try again."); }
     finally { setBusy(false); }
   }
 
   return <>
-    <Button type="button" size="icon" aria-label="Yorum yaz" title="Yorum yaz" onClick={() => { setSent(false); setOpen(true); }}
+    <Button type="button" size="icon" aria-label="Write a comment" title="Write a comment" onClick={() => { setSent(false); setOpen(true); }}
       className="fixed bottom-[calc(1rem+env(safe-area-inset-bottom))] right-4 z-30 size-11 rounded-full shadow-lg [&_svg]:size-5">
       <MessageSquareText />
     </Button>
@@ -37,18 +37,18 @@ export function CommentBox() {
       <DialogPrimitive.Portal>
         <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-overlay backdrop-blur-sm data-[state=open]:animate-in data-[state=open]:fade-in-0" />
         <DialogPrimitive.Content aria-describedby={undefined} className="fixed left-1/2 top-1/2 z-50 w-[calc(100%-2.5rem)] max-w-sm -translate-x-1/2 -translate-y-1/2 rounded-3xl bg-card p-5 shadow-2xl outline-none data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95">
-          <DialogPrimitive.Close aria-label="Kapat" className="absolute right-3 top-3 flex size-9 items-center justify-center rounded-full bg-secondary text-foreground"><X className="size-4" /></DialogPrimitive.Close>
+          <DialogPrimitive.Close aria-label="Close" className="absolute right-3 top-3 flex size-9 items-center justify-center rounded-full bg-secondary text-foreground"><X className="size-4" /></DialogPrimitive.Close>
           {sent ? <div className="py-6 text-center">
             <CheckCircle2 className="mx-auto size-12 text-success" strokeWidth={1.5} />
-            <DialogPrimitive.Title className="mt-3 text-lg font-semibold">Teşekkürler!</DialogPrimitive.Title>
-            <p className="mt-1 text-sm text-muted-foreground">Yorumunuz işletmeye iletildi.</p>
-            <DialogPrimitive.Close asChild><Button variant="secondary" className="mt-5">Kapat</Button></DialogPrimitive.Close>
+            <DialogPrimitive.Title className="mt-3 text-lg font-semibold">Thank you!</DialogPrimitive.Title>
+            <p className="mt-1 text-sm text-muted-foreground">Your comment was sent to the business.</p>
+            <DialogPrimitive.Close asChild><Button variant="secondary" className="mt-5">Close</Button></DialogPrimitive.Close>
           </div> : <form onSubmit={submit} className="space-y-3">
-            <DialogPrimitive.Title className="pr-10 text-lg font-semibold">Yorum yaz</DialogPrimitive.Title>
-            <p className="-mt-1 text-xs text-muted-foreground">Yorumunuzu yalnızca işletme görür.</p>
-            <textarea name="message" aria-label="Yorumunuz" required maxLength={1000} rows={5} placeholder="Yorumunuzu yazın..." className={`${field} resize-none`} />
+            <DialogPrimitive.Title className="pr-10 text-lg font-semibold">Write a comment</DialogPrimitive.Title>
+            <p className="-mt-1 text-xs text-muted-foreground">Only the business sees your comment.</p>
+            <textarea name="message" aria-label="Your comment" required maxLength={1000} rows={5} placeholder="Write your comment..." className={`${field} resize-none`} />
             <Button type="submit" disabled={busy} className="h-11 w-full">
-              <Send className="size-4" />{busy ? "Gönderiliyor..." : "Gönder"}
+              <Send className="size-4" />{busy ? "Sending..." : "Send"}
             </Button>
           </form>}
         </DialogPrimitive.Content>
